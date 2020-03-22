@@ -1,9 +1,11 @@
 package fi.ppp2.reminderapp
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 
@@ -21,8 +23,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         button_map.setOnClickListener{
-            val intent = Intent(applicationContext, MapActivity::class.java)
-            startActivity(intent)
+            //val intent = Intent(applicationContext, MapActivity::class.java)
+            //startActivity(intent)
+            Toast.makeText(applicationContext, "Testing toasts!", Toast.LENGTH_SHORT).show()
+            it.setBackgroundColor(Color.CYAN)
+
+            //textView.text = "Testing text change"
         }
 
         fab_time.setOnClickListener{
@@ -52,6 +58,10 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+
+        val data = arrayOf("Oulu", "Helsinki", "Pori")
+        val reminderAdapter = ReminderAdapter(applicationContext, data)
+        list.adapter = reminderAdapter
 
     }
 }
