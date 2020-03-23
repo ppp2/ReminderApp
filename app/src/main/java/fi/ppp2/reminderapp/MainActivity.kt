@@ -1,13 +1,19 @@
 package fi.ppp2.reminderapp
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.room.Room
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,9 +65,42 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val data = arrayOf("Oulu", "Helsinki", "Pori")
+        /*val data = arrayOf("Oulu", "Helsinki", "Pori")
         val reminderAdapter = ReminderAdapter(applicationContext, data)
-        list.adapter = reminderAdapter
+        list.adapter = reminderAdapter*/
 
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        refreshList()
+
+        /*val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager.registerListener(object)*/
+    }
+
+    private fun refreshList(){
+        doAsync {
+            val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "reminders").build()
+            val reminders = db.reminderDao().getReminders()
+
+            db.close()
+
+            uiThread {
+
+                if (reminders.isNotEmpty()) {
+                    val adapter = ReminderAdapter(applicationContext, reminders)
+                    list.adapter = adapter
+                } else {
+                    toast("No reminders yet")
+                }
+
+
+            }
+        }
     }
 }
