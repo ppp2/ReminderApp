@@ -6,14 +6,19 @@
     <TextView
         android:id="@+id/itemMessage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_weight="1"
-        android:text="Reminder text" />
+        android:text="Reminder text"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:id="@+id/itemTrigger"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
-        android:text="Trigger time" />
+        android:textSize="18sp"
+        android:layout_marginTop="5dp" />
 </LinearLayout>

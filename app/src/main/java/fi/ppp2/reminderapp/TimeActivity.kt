@@ -66,8 +66,8 @@ class TimeActivity : AppCompatActivity() {
         val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.setExact(AlarmManager.RTC, time, pendingIntent)
 
-        runOnUiThread{
+        /*runOnUiThread{
             toast("Reminder is created")
-        }
+        }*/
     }
 }

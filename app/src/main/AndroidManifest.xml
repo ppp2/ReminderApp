@@ -26,7 +26,7 @@
         <receiver android:name=".ReminderReceiver" />
         <receiver android:name=".GeofenceReceiver" />
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyD_2AKavXBRG8WPlboKLNf_2DR7jYs2efM" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/GMAPS_API_KEY" />
     </application>
 
 

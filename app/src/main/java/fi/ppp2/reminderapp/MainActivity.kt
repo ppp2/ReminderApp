@@ -1,22 +1,16 @@
 package fi.ppp2.reminderapp
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.hardware.Sensor
-import android.hardware.SensorManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Message
-import android.view.View
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.room.Room
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.list_view_item.view.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
@@ -29,24 +23,31 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         var fabOpened = false
 
-        button_time.setOnClickListener{
-            //toast("Mobile Computing")
-            //val intent = Intent(applicationContext, TimeActivity::class.java) //voidaan sijoittaa ensin muuttujaan
-            startActivity(Intent(applicationContext, TimeActivity::class.java))
-        }
+        createList()
 
-        button_map.setOnClickListener{
+
+        /*button_time.setOnClickListener{
+            //toast("Mobile Computing")
+            //val intent = Intent(applicationContext, TimeActivity::class.java)
+            startActivity(Intent(applicationContext, TimeActivity::class.java))
+        }*/
+
+        deleteNotifications.setOnClickListener{
             //val intent = Intent(applicationContext, MapActivity::class.java)
             //startActivity(intent)
-            Toast.makeText(applicationContext, "Testing toasts!", Toast.LENGTH_SHORT).show()
-            it.setBackgroundColor(Color.CYAN)
-
+            //Toast.makeText(applicationContext, "Testing toasts!", Toast.LENGTH_SHORT).show()
+            //it.setBackgroundColor(Color.CYAN)
             //textView.text = "Testing text change"
+
+
+            deleteNotifications()
+            refreshList()
+
         }
 
         fab_time.setOnClickListener{
             //toast("Mobile Computing")
-            //val intent = Intent(applicationContext, TimeActivity::class.java) //voidaan sijoittaa ensin muuttujaan
+            //val intent = Intent(applicationContext, TimeActivity::class.java)
             startActivity(Intent(applicationContext, TimeActivity::class.java))
         }
 
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     override fun onResume() {
         super.onResume()
 
@@ -99,10 +101,17 @@ class MainActivity : AppCompatActivity() {
 
             uiThread {
 
-                if (reminders.isNotEmpty()) {
+                /*if (reminders.isNotEmpty()) {*/
                     val adapter = ReminderAdapter(applicationContext, reminders)
+                    adapter.notifyDataSetChanged()
                     list.adapter = adapter
-                } else {
+                    adapter.notifyDataSetChanged()
+                list.adapter = adapter
+                /*} else {
+
+                    toast("No reminders yet")
+                }*/
+                if (reminders.isEmpty()) {
                     toast("No reminders yet")
                 }
 
@@ -111,18 +120,55 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun createList(){
+        doAsync {
+            val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "reminders").build()
+            val reminders = db.reminderDao().getReminders()
+
+            db.close()
+
+            uiThread {
+                val adapter = ReminderAdapter(applicationContext, reminders)
+                adapter.notifyDataSetChanged()
+                list.adapter = adapter
+            }
+        }
+    }
+
+    private fun deleteNotifications(){
+        doAsync {
+            val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "reminders").build()
+            db.reminderDao().deleteAll()
+            db.close()
+
+            uiThread{
+                val reminder = Reminder(
+                    uid = null,
+                    time = null,
+                    location = null,
+                    message = "No reminders yet!"
+                )
+                val data :List<Reminder> = listOf(reminder)
+                val reminderAdapter = ReminderAdapter(applicationContext, data)
+                list.adapter = reminderAdapter
+            }
+        }
+
+
+    }
+
     companion object {
         val CHANNEL_ID = "REMINDER_CHANNEL_ID"
         var notificationID = 1567
         fun showNotification(context: Context, message: String) {
-            var notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+            val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setContentTitle(context.getString(R.string.app_name)) //Resources, values, strings ->appname
                 .setContentText(message)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-            var notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
                 val channel = NotificationChannel(CHANNEL_ID, context.getString(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT).apply {

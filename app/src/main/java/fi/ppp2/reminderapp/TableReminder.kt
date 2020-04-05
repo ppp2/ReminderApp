@@ -13,11 +13,14 @@ data class Reminder (
 @Dao
 interface  ReminderDao{
     @Transaction @Insert
-    fun insert(reminder: Reminder)
+    fun insert(reminder: Reminder) : Long
 
     @Query(value = "SELECT * FROM reminders")
     fun getReminders(): List<Reminder>
 
     @Query("DELETE FROM reminders WHERE uid = :id")
     fun delete(id: Int)
+
+    @Query("DELETE FROM reminders")
+    fun deleteAll()
 }
