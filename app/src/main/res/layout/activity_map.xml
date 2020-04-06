@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
-    <LinearLayout
+    <!--<LinearLayout
         android:orientation="horizontal"
         android:id="@+id/place_autocomplete_fragment"
         android:layout_width="match_parent"
@@ -30,16 +30,16 @@
             android:layout_toRightOf="@+id/searchAutoComplete"
             app:srcCompat="@drawable/ic_search_24px" />
 
-    </LinearLayout>
+    </LinearLayout>-->
     <fragment
         android:id="@+id/map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent=".92"
+        app:layout_constraintHeight_percent="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/place_autocomplete_fragment"
+        app:layout_constraintTop_toTopOf="parent"
         tools:context=".MapActivity" />
 
     <EditText
@@ -68,9 +68,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toEndOf="@+id/et_message"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.995" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
